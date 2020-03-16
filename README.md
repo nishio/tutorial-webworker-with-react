@@ -2,8 +2,6 @@
 
 ## Create React App
 
-[Create React App](https://github.com/facebook/create-react-app).
-
 `$ npx create-react-app tutorial-webworker-with-react --typescript`
 
 ## Install worker-loader
@@ -27,7 +25,17 @@ export const heavyTask = (target: string) => {
 
 ## See the heavy task blocks UI
 
-See commit: 774345f
+See full changes on commit: 774345ff6fae0d024f8e142583fb4b93f058319e
+
+```typescript
+const runOnUIThread = (e: any) => {
+  status = "running...";
+  heavyTask("UIThread");
+  status = "finished";
+};
+...
+<button onClick={runOnUIThread}>on UI Thread</button>
+```
 
 ## Add webworker
 
@@ -41,12 +49,18 @@ onmessage = (e: any) => {
 };
 ```
 
-Unless @ts-ignore, I saw following error:
+Unless @ts-ignore, I saw following transpile error:
 
 ```
 function postMessage(message: any, targetOrigin: string, transfer?: Transferable[] | undefined): void
 Expected 2-3 arguments, but got 1.ts(2554)
 lib.dom.d.ts(19636, 44): An argument for 'targetOrigin' was not provided.
+```
+
+However, adding second argument such as `postMessage(result, "*")` causes following runtime error:
+
+```
+Uncaught TypeError: Failed to execute 'postMessage' on 'DedicatedWorkerGlobalScope': No function was found that matched the signature provided.
 ```
 
 ## Add button to call webworker
@@ -72,4 +86,13 @@ To fix it:
 
 ## Add custom type definition
 
-See commit: a9c0c03
+See full changes on commit: a9c0c039af66975a2db0545663081cb99b3a5069
+
+```typescript
+declare module "worker-loader!*" {
+  class WebpackWorker extends Worker {
+    constructor();
+  }
+  export default WebpackWorker;
+}
+```
