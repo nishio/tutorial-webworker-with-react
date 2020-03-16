@@ -60,7 +60,8 @@ lib.dom.d.ts(19636, 44): An argument for 'targetOrigin' was not provided.
 However, adding second argument such as `postMessage(result, "*")` causes following runtime error:
 
 ```
-Uncaught TypeError: Failed to execute 'postMessage' on 'DedicatedWorkerGlobalScope': No function was found that matched the signature provided.
+Uncaught TypeError: Failed to execute 'postMessage' on 'DedicatedWorkerGlobalScope': 
+No function was found that matched the signature provided.
 ```
 
 ## Add button to call webworker
