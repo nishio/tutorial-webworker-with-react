@@ -8,12 +8,14 @@
 
 ## Install worker-loader
 
-`$ cd tutorial-webworker-with-react/`
-`$ npm install worker-loader --save-dev`
+```
+$ cd tutorial-webworker-with-react/
+$ npm install worker-loader --save-dev
+```
 
 ## Add a heavy task
 
-```
+```typescript
 export const heavyTask = (target: string) => {
   console.log("hello,", target);
   const startTime = Date.now();
@@ -25,9 +27,11 @@ export const heavyTask = (target: string) => {
 
 ## See the heavy task blocks UI
 
+See commit: 774345f
+
 ## Add webworker
 
-```
+```typescript
 import { heavyTask } from "./common";
 
 onmessage = (e: any) => {
@@ -47,7 +51,7 @@ lib.dom.d.ts(19636, 44): An argument for 'targetOrigin' was not provided.
 
 ## Add button to call webworker
 
-```
+```typescript
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import Worker from "worker-loader!./webworker";
 
@@ -67,3 +71,5 @@ It works. But you may see following error: `Cannot find module 'worker-loader!./
 To fix it:
 
 ## Add custom type definition
+
+See commit: a9c0c03
