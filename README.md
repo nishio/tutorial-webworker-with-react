@@ -1,44 +1,69 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Tutorial of WebWorker + react-create-app --typescript
 
-## Available Scripts
+## Create React App
 
-In the project directory, you can run:
+[Create React App](https://github.com/facebook/create-react-app).
 
-### `npm start`
+`$ npx create-react-app tutorial-webworker-with-react --typescript`
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Install worker-loader
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+`$ cd tutorial-webworker-with-react/`
+`$ npm install worker-loader --save-dev`
 
-### `npm test`
+## Add a heavy task
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```
+export const heavyTask = (target: string) => {
+  console.log("hello,", target);
+  const startTime = Date.now();
+  while (Date.now() - startTime < 3000) {}
+  console.log("bye,", target);
+  return 42;
+};
+```
 
-### `npm run build`
+## See the heavy task blocks UI
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Add webworker
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+```
+import { heavyTask } from "./common";
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+onmessage = (e: any) => {
+  const result = heavyTask("webworker");
+  // @ts-ignore
+  postMessage(result);
+};
+```
 
-### `npm run eject`
+Unless @ts-ignore, I saw following error:
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```
+function postMessage(message: any, targetOrigin: string, transfer?: Transferable[] | undefined): void
+Expected 2-3 arguments, but got 1.ts(2554)
+lib.dom.d.ts(19636, 44): An argument for 'targetOrigin' was not provided.
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Add button to call webworker
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```
+// eslint-disable-next-line import/no-webpack-loader-syntax
+import Worker from "worker-loader!./webworker";
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+export const runOnWebWorker = (e: any) => {
+  status = "running...";
+  const worker = new Worker();
+  worker.postMessage("heavyTask");
+  worker.onmessage = function(event: any) {
+    status = "finished";
+  };
+};
+...
+<button onClick={runOnWebWorker}>on WebWorker</button>
+```
 
-## Learn More
+It works. But you may see following error: `Cannot find module 'worker-loader!./webworker'.`
+To fix it:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Add custom type definition
