@@ -25,7 +25,7 @@ export const heavyTask = (target: string) => {
 
 ## See the heavy task blocks UI
 
-See full changes on commit: 774345ff6fae0d024f8e142583fb4b93f058319e
+See full changes on commit: [774345f](https://github.com/nishio/tutorial-webworker-with-react/commit/774345ff6fae0d024f8e142583fb4b93f058319e)
 
 ```typescript
 const runOnUIThread = (e: any) => {
@@ -64,9 +64,11 @@ Uncaught TypeError: Failed to execute 'postMessage' on 'DedicatedWorkerGlobalSco
 No function was found that matched the signature provided.
 ```
 
+If you hate `@ts-ignore`, see another solution: "use cast instead of ts-ignore" [1d3c2a4](https://github.com/nishio/tutorial-webworker-with-react/commit/1d3c2a4b4b3d21fa20ce342d1c6eda17dd01e2f4)
+
 ## Add button to call webworker
 
-See full changes on commit: 0f5c9643cdfa32dbc87dd3b70f465be5af6a2699
+See full changes on commit: [0f5c964](https://github.com/nishio/tutorial-webworker-with-react/commit/0f5c9643cdfa32dbc87dd3b70f465be5af6a2699)
 
 ```typescript
 // eslint-disable-next-line import/no-webpack-loader-syntax
@@ -84,6 +86,8 @@ export const runOnWebWorker = (e: any) => {
 <button onClick={runOnWebWorker}>on WebWorker</button>
 ```
 
+**NOTICE**: You don't need to modifiy webpack.config.js if you use inlined `webpack-loader-syntax` as above. I saw several people are confusing about that.
+
 In development environment `npm run start`, it works.
 But you may see following error on IDE (for example VSCode): `Cannot find module 'worker-loader!./webworker'.`
 
@@ -93,7 +97,7 @@ To fix the error, you need to add custom type definition.
 
 ## Add custom type definition
 
-See full changes on commit: a9c0c039af66975a2db0545663081cb99b3a5069
+See full changes on commit: [a9c0c03](https://github.com/nishio/tutorial-webworker-with-react/commit/a9c0c039af66975a2db0545663081cb99b3a5069)
 
 ```typescript
 declare module "worker-loader!*" {
@@ -103,3 +107,5 @@ declare module "worker-loader!*" {
   export default WebpackWorker;
 }
 ```
+
+If you didn't specify `typeRoots` on tsconfig yet, you also need it. See the commit.
