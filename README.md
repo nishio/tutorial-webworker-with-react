@@ -60,11 +60,13 @@ lib.dom.d.ts(19636, 44): An argument for 'targetOrigin' was not provided.
 However, adding second argument such as `postMessage(result, "*")` causes following runtime error:
 
 ```
-Uncaught TypeError: Failed to execute 'postMessage' on 'DedicatedWorkerGlobalScope': 
+Uncaught TypeError: Failed to execute 'postMessage' on 'DedicatedWorkerGlobalScope':
 No function was found that matched the signature provided.
 ```
 
 ## Add button to call webworker
+
+See full changes on commit: 0f5c9643cdfa32dbc87dd3b70f465be5af6a2699
 
 ```typescript
 // eslint-disable-next-line import/no-webpack-loader-syntax
@@ -82,8 +84,12 @@ export const runOnWebWorker = (e: any) => {
 <button onClick={runOnWebWorker}>on WebWorker</button>
 ```
 
-It works. But you may see following error: `Cannot find module 'worker-loader!./webworker'.`
-To fix it:
+In development environment `npm run start`, it works.
+But you may see following error on IDE (for example VSCode): `Cannot find module 'worker-loader!./webworker'.`
+
+The error also occurs in release environment `npm run build`.
+
+To fix the error, you need to add custom type definition.
 
 ## Add custom type definition
 
