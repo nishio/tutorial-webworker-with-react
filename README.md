@@ -109,3 +109,33 @@ declare module "worker-loader!*" {
 ```
 
 If you didn't specify `typeRoots` on tsconfig yet, you also need it. See the commit.
+
+# Appendix
+
+In this tutorial, I create new worker each call.
+If you push button before the previous task finishes, the new task runs concurrently.
+
+```typescript
+export const runOnWebWorker = (e: any) => {
+  status = "running...";
+  const worker = new Worker();
+  worker.postMessage("heavyTask");
+  worker.onmessage = function(event: any) {
+    status = "finished";
+  };
+};
+```
+
+If we re-use the worker object like below, the new message waits in queue until the previous task finishes.
+
+```typescript
+const worker = new Worker();
+worker.onmessage = function(event: any) {
+  status = "finished";
+};
+
+export const runOnWebWorker = (e: any) => {
+  status = "running...";
+  worker.postMessage("heavyTask");
+};
+```
