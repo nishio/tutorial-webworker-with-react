@@ -112,6 +112,8 @@ If you didn't specify `typeRoots` on tsconfig yet, you also need it. See the com
 
 # Appendix
 
+## Concurrency
+
 In this tutorial, I create new worker each call.
 If you push button before the previous task finishes, the new task runs concurrently.
 
@@ -138,4 +140,51 @@ export const runOnWebWorker = (e: any) => {
   status = "running...";
   worker.postMessage("heavyTask");
 };
+```
+
+## You can not pass functions to workers
+
+Following code produce an error below.
+
+```
+const v = { inc: (x: number) => x + 1 };
+worker.postMessage(v);
+```
+
+```
+DataCloneError: Failed to execute 'postMessage' on 'Worker': x => x + 1 could not be cloned.
+```
+
+In case of a class instance with methods like below:
+
+```typescript
+class Vec2D {
+  x: number;
+  y: number;
+  constructor(x: number, y: number) {
+    this.x = x;
+    this.y = y;
+  }
+  scale(s: number) {
+    this.x *= s;
+    this.y *= s;
+    return this;
+  }
+}
+```
+
+the `postMessage` success, but the methods are not passed to the worker.
+
+```typescript
+// App.tsx
+const v = new Vec2D(1, 2);
+v.scale(2);
+worker.postMessage(v); // OK
+```
+
+```typescript
+// webworker.ts
+e.data.scale(3); // NG
+// Uncaught TypeError: e.data.scale is not a function
+//  at onmessage (webworker.ts:4)
 ```
