@@ -5,10 +5,28 @@ import { heavyTask } from "./common";
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import Worker from "worker-loader!./webworker";
 
+class Vec2D {
+  x: number;
+  y: number;
+  constructor(x: number, y: number) {
+    this.x = x;
+    this.y = y;
+  }
+  scale(s: number) {
+    this.x *= s;
+    this.y *= s;
+    return this;
+  }
+}
 export const runOnWebWorker = (e: any) => {
   status = "running...";
   const worker = new Worker();
-  worker.postMessage("heavyTask");
+  //worker.postMessage("heavyTask");
+
+  const v = new Vec2D(1, 2);
+  v.scale(2);
+  worker.postMessage(v);
+
   worker.onmessage = function(event: any) {
     status = "finished";
   };
