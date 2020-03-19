@@ -188,3 +188,5 @@ e.data.scale(3); // NG
 // Uncaught TypeError: e.data.scale is not a function
 //  at onmessage (webworker.ts:4)
 ```
+
+Commit: [588193c](https://github.com/nishio/tutorial-webworker-with-react/commit/588193c2dcb01dcec63dc7a8e06c36d7e0105636)
